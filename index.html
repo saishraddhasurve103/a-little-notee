@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f8eee8">
+<title>A little note for you ♡</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@400;500;600&family=Parisienne&display=swap');
+  :root{--paper:#fffaf5;--rose:#b86f7b;--wine:#713e4b;--ink:#49363a;--muted:#927b7c;--line:#ead7d2}
+  *{box-sizing:border-box}
+  html{min-height:100%;background:#f8eee8}
+  body{margin:0;min-height:100vh;overflow-x:hidden;color:var(--ink);font-family:'DM Sans',sans-serif;
+    background:radial-gradient(ellipse at 15% 15%,#f4dfe0 0,transparent 34%),radial-gradient(ellipse at 85% 82%,#f0dfd0 0,transparent 34%),#f8eee8}
+  .grain{position:fixed;inset:0;pointer-events:none;opacity:.16;z-index:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.2'/%3E%3C/svg%3E")}
+  .ambient{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+  .float{position:absolute;color:#c68a94;opacity:.5;animation:drift 9s ease-in-out infinite}
+  .float:nth-child(1){left:8%;top:17%;font-size:22px}.float:nth-child(2){right:12%;top:23%;font-size:16px;animation-delay:-3s}.float:nth-child(3){left:14%;bottom:18%;font-size:17px;animation-delay:-5s}.float:nth-child(4){right:9%;bottom:15%;font-size:25px;animation-delay:-2s}
+  @keyframes drift{0%,100%{transform:translateY(0) rotate(-8deg)}50%{transform:translateY(-20px) rotate(9deg)}}
+  main{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:42px 18px 30px}
+  .topline{font-size:10px;letter-spacing:.32em;text-transform:uppercase;color:var(--rose);font-weight:600;text-align:center;margin-bottom:16px}\n  .dedication{font-family:"Parisienne",cursive;font-size:27px;color:#a95d6d;text-align:center;margin:-5px 0 18px;letter-spacing:.02em}.dedication span{color:var(--wine)}
+  h1{font-family:'Cormorant Garamond',serif;font-size:clamp(42px,8vw,76px);line-height:.94;letter-spacing:-.035em;text-align:center;font-weight:500;color:var(--wine);margin:0 0 13px}
+  .intro{font-family:'Cormorant Garamond',serif;font-size:20px;text-align:center;color:var(--muted);margin:0 0 30px}
+  .stage{width:min(570px,100%);perspective:1000px}
+  .envelope-wrap{height:230px;display:grid;place-items:center;position:relative;margin:0 auto 8px}
+  .envelope{position:relative;width:min(330px,85vw);height:190px;cursor:pointer;filter:drop-shadow(0 18px 18px #794e4b1b);transition:transform .35s ease}
+  .envelope:hover{transform:translateY(-4px) rotate(-.5deg)}
+  .env-back{position:absolute;inset:0;background:#e6bfc0;border-radius:5px}
+  .env-front{position:absolute;inset:0;background:#f0d1cd;clip-path:polygon(0 0,50% 57%,100% 0,100% 100%,0 100%);border-radius:5px}
+  .env-flap{position:absolute;inset:0;background:#dba7ae;clip-path:polygon(0 0,100% 0,50% 61%);transform-origin:top;transition:transform .75s cubic-bezier(.2,.7,.2,1);z-index:4;border-radius:5px}
+  .seal{position:absolute;z-index:5;left:50%;top:51%;transform:translate(-50%,-50%);width:39px;height:39px;border-radius:50%;display:grid;place-items:center;background:#a85f70;color:#fff0ed;font-size:20px;box-shadow:0 3px 8px #8a475044;transition:opacity .3s}
+  .letter-peek{position:absolute;left:8%;right:8%;bottom:8px;height:145px;background:#fffaf5;border-radius:4px;transition:transform .75s cubic-bezier(.2,.7,.2,1);z-index:2;display:flex;align-items:flex-start;justify-content:center;padding-top:20px;color:#b87983;font-family:'Parisienne',cursive;font-size:25px}
+  .envelope.open .env-flap{transform:rotateX(180deg);z-index:1}
+  .envelope.open .letter-peek{transform:translateY(-76px);z-index:3}
+  .envelope.open .seal{opacity:0}
+  .hint{text-align:center;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#a18486;margin:4px 0 28px;transition:opacity .3s}
+  .letter-card{display:none;position:relative;background:rgba(255,250,245,.91);border:1px solid #ead7d2;border-radius:4px;padding:clamp(26px,6vw,48px);box-shadow:0 24px 70px #75444a12;animation:appear .8s ease both;overflow:hidden}
+  .letter-card:before,.letter-card:after{content:"";position:absolute;width:80px;height:80px;border:1px solid #e7c8c7;border-radius:50%;opacity:.65}
+  .letter-card:before{top:-46px;right:-35px}.letter-card:after{bottom:-48px;left:-35px}
+  .letter-card.show{display:block}
+  @keyframes appear{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+  .letter-label{font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--rose);text-align:center;margin-bottom:24px}
+  .message{font-family:'Cormorant Garamond',serif;font-size:clamp(22px,4vw,29px);line-height:1.58;text-align:center;color:#594147;margin:0;white-space:normal}
+  .message .emphasis{color:#a95d6d;font-style:italic}
+  .little-heart{text-align:center;color:#b86f7b;font-size:23px;margin:24px 0 0;animation:softBeat 2s ease-in-out infinite}
+  @keyframes softBeat{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+  .controls{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:22px}
+  button{font-family:'DM Sans',sans-serif;cursor:pointer;border-radius:999px;padding:12px 19px;border:1px solid #d8b0b5;background:transparent;color:var(--wine);font-size:12px;letter-spacing:.04em;transition:all .25s}
+  button:hover{background:#f3e0df;transform:translateY(-2px)}
+  .replay{display:none}
+  .replay.show{display:inline-block}
+  .foot{margin-top:26px;color:#a58b8c;font-size:10px;letter-spacing:.16em;text-transform:uppercase;text-align:center}
+  .petal{position:fixed;top:-30px;z-index:10;pointer-events:none;animation:fall linear forwards}
+  @keyframes fall{to{transform:translateY(110vh) rotate(460deg);opacity:0}}
+  @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<div class="ambient"><span class="float">♡</span><span class="float">✧</span><span class="float">✦</span><span class="float">♡</span></div>
+<main>
+  <div class="topline">A small note, from the heart</div>
+  <div class="dedication">for <span>Abhishek Raje</span> ♡</div>
+  <h1>Some things<br>are better felt.</h1>
+  <p class="intro">And some things deserve to be said. ♡</p>
+
+  <div class="stage">
+    <div class="envelope-wrap" id="envelopeWrap">
+      <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Open the letter">
+        <div class="env-back"></div>
+        <div class="letter-peek">just for you ♡</div>
+        <div class="env-front"></div>
+        <div class="env-flap"></div>
+        <div class="seal">♡</div>
+      </div>
+    </div>
+    <p class="hint" id="hint">tap the envelope to open</p>
+
+    <section class="letter-card" id="letterCard" aria-live="polite">
+      <div class="letter-label">A little honesty, from me to you</div>
+      <p class="message">I genuinely mean my sorry, and I’m truly sorry for hurting you. <span class="emphasis">You matter to me</span>, and honestly, I miss your presence more than I can explain. I just wish things felt okay between us again. ❤️‍🩹</p>
+      <div class="little-heart">♡</div>
+      <div class="controls">
+        <button id="heartButton">send a little heart ♡</button>
+        <button class="replay" id="replayButton">read it again ↺</button>
+      </div>
+    </section>
+  </div>
+  <div class="foot">No pressure. Just what I feel. ♡</div>
+</main>
+<script>
+  const envelope = document.getElementById('envelope');
+  const card = document.getElementById('letterCard');
+  const hint = document.getElementById('hint');
+  const replay = document.getElementById('replayButton');
+  function openLetter(){
+    if(envelope.classList.contains('open')) return;
+    envelope.classList.add('open');
+    hint.style.opacity = '0';
+    setTimeout(()=>{
+      card.classList.add('show');
+      replay.classList.add('show');
+      card.scrollIntoView({behavior:'smooth',block:'center'});
+      sprinkle(12);
+    },650);
+  }
+  envelope.addEventListener('click',openLetter);
+  envelope.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openLetter();}});
+  document.getElementById('heartButton').addEventListener('click',()=>sprinkle(26));
+  replay.addEventListener('click',()=>{
+    envelope.classList.remove('open');
+    card.classList.remove('show');
+    replay.classList.remove('show');
+    hint.style.opacity = '1';
+    document.getElementById('envelopeWrap').scrollIntoView({behavior:'smooth',block:'center'});
+  });
+  function sprinkle(count){
+    const symbols=['♡','♥','✧','✦'];
+    for(let i=0;i<count;i++){
+      const el=document.createElement('span');
+      el.className='petal';
+      el.textContent=symbols[Math.floor(Math.random()*symbols.length)];
+      el.style.left=Math.random()*100+'vw';
+      el.style.color=['#b86f7b','#d99ca4','#c88b87','#e5b7a8'][Math.floor(Math.random()*4)];
+      el.style.fontSize=(13+Math.random()*17)+'px';
+      el.style.animationDuration=(3+Math.random()*3)+'s';
+      document.body.appendChild(el);
+      setTimeout(()=>el.remove(),6500);
+    }
+  }
+</script>
+</body>
+</html>
